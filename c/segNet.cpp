@@ -772,6 +772,16 @@ bool segNet::classify( const char* ignore_class )
 	// if desired, find the ID of the class to ignore (typically void)
 	const int ignoreID = FindClassID(ignore_class);
 	
+	/*
+	//TODO: optimize, our array read is in 3 nested for loops which should cause serious performance issues on devices without without cache-coherent mapped memory
+	// Untested so far
+	uint32_t blockObjects = s_c * s_w * s_h + s_h * s_w + s_w;
+	float* cpuBlock  = (float*)malloc(blockObjects * sizeof(float)); //alloc space for block of confidences on CPU
+	memcpy(cpuBlock, mOutputs[0].CPU, blockObjects * sizeof(float));
+	*/
+	
+	
+	
 	//printf(LOG_TRT "segNet::Process -- s_w %i  s_h %i  s_c %i  s_x %f  s_y %f\n", s_w, s_h, s_c, s_x, s_y);
 	//printf(LOG_TRT "segNet::Process -- ignoring class '%s' id=%i\n", ignore_class, ignoreID);
 
@@ -794,6 +804,7 @@ bool segNet::classify( const char* ignore_class )
 
 				// check if this class score is higher
 				const float p = scores[c * s_w * s_h + y * s_w + x];
+				//const float score = cpuBlock[n * mNumClasses + m]; //read from allocated cpu block
 
 				if( c_max < 0 || p > p_max )
 				{
@@ -806,6 +817,9 @@ bool segNet::classify( const char* ignore_class )
 			//printf("(%u, %u) -> class %i\n", x, y, (uint32_t)c_max);
 		}
 	}
+	
+	//Make sure to free cpublock after using it
+	//free(cpuBlock);
 
 	return true;
 }
