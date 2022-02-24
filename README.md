@@ -1,6 +1,6 @@
 ## Jetson-inference optimized for devices without cache-coherent mapped memory 
 
-Post-process time using default jetson-inference by Dusty-nv:
+Post-process time using default jetson-inference by Dusty-nv on a TX2
 
 <img src="https://user-images.githubusercontent.com/38530728/154929480-e45ae7a1-f463-4e68-9e7e-901bb47953af.png" width="50%">
 
