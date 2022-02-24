@@ -1,3 +1,25 @@
+## Jetson-inference optimized for devices without cache-coherent mapped memory 
+
+Post-process time on default jetson-inference by Dusty-nv:
+
+<img src="https://user-images.githubusercontent.com/38530728/154929480-e45ae7a1-f463-4e68-9e7e-901bb47953af.png" width="50%">
+
+Optimized code
+
+<img src="https://user-images.githubusercontent.com/38530728/154940503-6bfa7160-3682-4c83-80b8-92d9b6cf9935.png" width="50%">
+
+## Devices
+The following devices should see a significant performance increase by using the optimized code
+- Jetson TX2
+- Jetson TX1
+- Jetson TK1
+- Jetson Nano
+- Any pre-pascal Nvidia GPU
+
+### Associated issue
+https://github.com/dusty-nv/jetson-inference/issues/1369
+
+
 <img src="https://github.com/dusty-nv/jetson-inference/raw/master/docs/images/deep-vision-header.jpg" width="100%">
 
 # Deploying Deep Learning
