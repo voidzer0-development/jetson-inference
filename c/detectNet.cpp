@@ -806,6 +806,13 @@ int detectNet::Detect( void* input, uint32_t width, uint32_t height, imageFormat
 
 		const uint32_t numBoxes = DIMS_C(mOutputs[OUTPUT_BBOX].dims);
 		const uint32_t numCoord = DIMS_H(mOutputs[OUTPUT_BBOX].dims);
+		
+		uint32_t blockObjects = numBoxes * mNumClasses + mNumClasses;
+		float* cpuBlock  = (float*)malloc(blockObjects * sizeof(float)); //alloc space for block of confidences on CPU 
+		
+		memcpy(cpuBlock,  mOutputs[OUTPUT_CONF].CPU, blockObjects * sizeof(float)); //copy from mapped memory into CPU memory
+		
+		
 
 		for( uint32_t n=0; n < numBoxes; n++ )
 		{
@@ -815,7 +822,7 @@ int detectNet::Detect( void* input, uint32_t width, uint32_t height, imageFormat
 			// class #0 in ONNX-SSD is BACKGROUND (ignored)
 			for( uint32_t m=1; m < mNumClasses; m++ )	
 			{
-				const float score = conf[n * mNumClasses + m];
+				const float score = cpuBlock[n * mNumClasses + m]; //retrieve scores from copied memory block
 
 				if( score < mCoverageThreshold )
 					continue;
@@ -847,6 +854,7 @@ int detectNet::Detect( void* input, uint32_t width, uint32_t height, imageFormat
 
 		// sort the detections by confidence value
 		sortDetections(detections, numDetections);
+		free(cpuBlock); //free allocated memory
 	}
 	else
 	{
